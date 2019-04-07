@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.8)
+if(NOT DEFINED EOC_HOME)
+	set(EOC_HOME ${CMAKE_CURRENT_LIST_DIR})
+endif()
+set(EOC_LIBS_DIRS ${EOC_HOME}/lib)
+set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_LIST_DIR}/c_flag_overrides.cmake)
+set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_LIST_DIR}/cxx_flag_overrides.cmake)

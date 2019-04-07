@@ -1,0 +1,11 @@
+if(NOT EocSystem_FOUND)
+	if(NOT DEFINED EOC_HOME)
+		set(EOC_HOME $ENV{EOC_HOME})
+	endif()
+	include(${EOC_HOME}/EocBuildHelper.cmake)
+	
+	add_subdirectory(${CMAKE_CURRENT_LIST_DIR} ${CMAKE_BINARY_DIR}/EocSystem)
+	set(EocSystem_FOUND True)
+	set(EocSystem_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/src)
+	set(EocSystem_LIBRARIES EocSystem)
+endif()
