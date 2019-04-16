@@ -1,0 +1,30 @@
+version: '{build}'
+
+configuration:
+- Debug
+- Release
+
+environment:
+  matrix:
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    VS_VERSION: 15 2017
+    VS_PLATFORM: win32
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    VS_VERSION: 15 2017
+    VS_PLATFORM: x64
+
+before_build:
+- cmd: |
+    git submodule update --init --recursive
+    cd %APPVEYOR_BUILD_FOLDER%/env/lib/system
+    cmake -Bbuild -G "Visual Studio %VS_VERSION%" -DCMAKE_GENERATOR_PLATFORM=%VS_PLATFORM% -DCMAKE_VERBOSE_MAKEFILE=ON -Wno-dev -DEocSystem_BUILD_TESTS=ON
+build:
+  project: env/lib/system/build/EocSystem.sln
+  parallel: true
+  verbosity: minimal
+
+test_script:
+- cmd: |
+    cd %APPVEYOR_BUILD_FOLDER%/env/lib/system/build/test/%CONFIGURATION%
+    EocSystem_Test.exe -r junit -o test_result.xml
+    curl -F "file=@test_result.xml" "https://ci.appveyor.com/api/testresults/junit/%APPVEYOR_JOB_ID%"
