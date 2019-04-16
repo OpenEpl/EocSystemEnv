@@ -1,11 +1,12 @@
 ***Only Chinese document is available.***
 
 # EocSystemEnv
+[![Build status](https://ci.appveyor.com/api/projects/status/dwvma4tcivb726ql?svg=true)](https://ci.appveyor.com/project/qiqiworld/eocsystemenv)  
 EplOnCpp是基于Cpp构建的Epl语言编译环境，用于支持x64程序编写及实现特殊功能  
 本项目为EplOnCpp中核心环境部分  
 
 # 许可
-本项目使用MIT许可证：[https://github.com/1354092549/EocSystemEnv/blob/master/LICENSE](https://github.com/1354092549/EocSystemEnv/blob/master/LICENSE)
+本项目使用MIT许可证：[https://github.com/1354092549/EocSystemEnv/blob/master/LICENSE](https://github.com/1354092549/EocSystemEnv/blob/master/LICENSE)  
 在使用前，请务必阅读并遵守许可证
 
 # 交流
