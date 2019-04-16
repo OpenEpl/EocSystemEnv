@@ -4,3 +4,8 @@ aux_source_directory(${EocSystem_SOURCE_DIR}/src/e/system EocSystem_DIR_SRCS)
 add_library(EocSystem ${EocSystem_DIR_SRCS})
 set_property(TARGET EocSystem PROPERTY CXX_STANDARD 17)
 set_property(TARGET EocSystem PROPERTY CXX_STANDARD_REQUIRED ON)
+
+if(EocSystem_BUILD_TESTS)
+	enable_testing()
+	add_subdirectory(test)
+endif()

@@ -7,6 +7,13 @@ namespace e
 {
 	namespace system
 	{
+		class bad_any_cast : public std::bad_cast {
+		public:
+			virtual const char* what() const noexcept override {
+				return "Bad e::system::any::cast<T>";
+			}
+		};
+
 		class any;
 
 		template<typename T, std::enable_if_t<!std::is_same_v<T, e::system::any>, int> = 0> void marshalToVector(std::vector<intptr_t> &vector, T& that)
@@ -195,6 +202,7 @@ namespace e
 				typeInfo = x.typeInfo;
 				runtimeInfo = x.runtimeInfo;
 				if (runtimeInfo != nullptr) runtimeInfo->clone(x.storage, storage);
+				return *this;
 			}
 			e::system::any& operator=(e::system::any&& x) noexcept
 			{
@@ -230,10 +238,14 @@ namespace e
 			}
 			template<class T> T& cast() 
 			{
+				if (typeid(T) != this->type())
+					throw bad_any_cast{};
 				return *storage.get<T>();
 			}
 			template<class T> const T& cast() const
 			{
+				if (typeid(T) != this->type())
+					throw bad_any_cast{};
 				return *storage.get<T>();
 			}
 			void byRef_Marshal(void* &v)
