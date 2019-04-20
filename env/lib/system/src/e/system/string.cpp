@@ -12,7 +12,7 @@ static int cmp_str(const e::system::string & _Left, const e::system::string & _R
 	auto r = std::memcmp(_Left.data, _Right.data, len < r_len ? len : r_len);
 	if (r != 0)
 		return r;
-	if (len = r_len)
+	if (len == r_len)
 		return 0;
 	else if (len > r_len)
 		return 1;
