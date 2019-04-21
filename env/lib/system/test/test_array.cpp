@@ -8,7 +8,7 @@ TEST_CASE("1-dim array", "[array]")
 	CHECK(x.GetSize() == 5);
 	for (size_t i = 0; i < 5; i++)
 	{
-		x.At_CStyle(i) = i + 1;
+		x.At_CStyle(i) = (int)i + 1;
 	}
 	for (size_t i = 1; i <= 5; i++)
 	{

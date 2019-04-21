@@ -69,8 +69,8 @@ namespace e
 			public:
 				using NativeType = typename TMarshal::NativeType;
 			private:
-				typename T& value;
-				typename NativeType x;
+				T& value;
+				NativeType x;
 			public:
 				ParamMarshalHelper(T& _value) :value(_value)
 				{
@@ -80,7 +80,7 @@ namespace e
 				{
 					TMarshal::cleanup(x, value);
 				}
-				typename NativeType& get()
+				NativeType& get()
 				{
 					return x;
 				}
@@ -90,10 +90,10 @@ namespace e
 			template<> struct ParamMarshalHelper<e::system::any>
 			{
 			public:
-				using NativeType = typename double;
+				using NativeType = double;
 			private:
 				typename e::system::any& value;
-				typename double x;
+				double x;
 			public:
 				ParamMarshalHelper(e::system::any& _value) :value(_value)
 				{
@@ -103,7 +103,7 @@ namespace e
 				{
 					value.byVal_Cleanup(reinterpret_cast<__int64 &>(x));
 				}
-				typename double& get()
+				double& get()
 				{
 					return x;
 				}

@@ -14,7 +14,7 @@ namespace e
 		//Raw
 		template<typename ManagedType> struct marshaler
 		{
-			using NativeType = typename ManagedType;
+			using NativeType = ManagedType;
 			static constexpr bool SameMemoryStruct = true;
 			static void marshal(NativeType &v, ManagedType &r)
 			{
@@ -44,7 +44,7 @@ namespace e
 		//LPArray
 		template<> struct marshaler<e::system::bin>
 		{
-			using NativeType = typename uint8_t*;
+			using NativeType = uint8_t*;
 			static constexpr bool SameMemoryStruct = false;
 			static void marshal(NativeType &v, e::system::bin &r)
 			{
@@ -58,7 +58,7 @@ namespace e
 		template<typename ElemType> struct marshaler<e::system::array<ElemType>>
 		{
 		private:
-			using ElemMarshalerType = typename marshaler<ElemType>;
+			using ElemMarshalerType = typename e::system::marshaler<ElemType>;
 			using NativeElemType = typename ElemMarshalerType::NativeType;
 			using ManagedType = e::system::array<ElemType>;
 		public:
@@ -99,7 +99,7 @@ namespace e
 		{
 		private:
 			using ElemType = typename e::system::remove_e_array_type_t<ManagedType>;
-			using ElemMarshalerType = typename marshaler<ElemType>;
+			using ElemMarshalerType = typename e::system::marshaler<ElemType>;
 			using NativeElemType = typename ElemMarshalerType::NativeType;
 		public:
 			struct NativeType {
@@ -127,10 +127,10 @@ namespace e
 		template<typename ManagedType> struct refMarshaler
 		{
 		private:
-			using ValueMarshalerType = typename marshaler<ManagedType>;
+			using ValueMarshalerType = typename e::system::marshaler<ManagedType>;
 			using NativeValueType = typename ValueMarshalerType::NativeType;
 		public:
-			using NativeType = typename NativeValueType*;
+			using NativeType = NativeValueType*;
 			static constexpr bool SameMemoryStruct = false;
 			static void marshal(NativeType &v, ManagedType &r)
 			{
@@ -196,7 +196,7 @@ namespace e
 		//Raw
 		template<typename ManagedType> struct resultReceiver
 		{
-			using NativeType = typename ManagedType;
+			using NativeType = ManagedType;
 			static ManagedType receive(NativeType&& v)
 			{
 				return v;

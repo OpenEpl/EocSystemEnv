@@ -50,7 +50,7 @@ namespace e
 				{
 					elem[i].~TElem();
 				}
-				delete data;
+				delete static_cast<char *>(data);
 			}
 			bool empty() const
 			{

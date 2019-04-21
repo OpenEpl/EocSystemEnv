@@ -6,7 +6,7 @@ namespace e
 	{
 		template<typename ManagedType> struct MethodPtrPackager_Arg
 		{
-			using NativeType = typename ManagedType;
+			using NativeType = ManagedType;
 			static ManagedType receive(NativeType v)
 			{
 				return v;
@@ -22,7 +22,7 @@ namespace e
 		};
 		template<typename ManagedType> struct MethodPtrPackager_Result
 		{
-			using NativeType = typename ManagedType;
+			using NativeType = ManagedType;
 			NativeType of(ManagedType&& v)
 			{
 				return v;
@@ -59,7 +59,7 @@ namespace e
 		template<typename TResult, typename... TArgs>
 		struct MethodPtrPackager<TResult(TArgs...)>
 		{
-			template<typename TResult(__stdcall *f)(TArgs... v)> 
+			template<TResult(__stdcall *f)(TArgs... v)> 
 			static typename MethodPtrPackager_Result<TResult>::NativeType __stdcall func(typename MethodPtrPackager_Arg<TArgs>::NativeType... args)
 			{
 				if constexpr (std::is_void_v<TResult>) 
@@ -72,7 +72,7 @@ namespace e
 					return result.of(f(MethodPtrPackager_Arg<TArgs>::receive(args)...));
 				}
 			}
-			template<typename TResult(__stdcall *f)(TArgs... v)> 
+			template<TResult(__stdcall *f)(TArgs... v)> 
 			constexpr const static e::system::methodptr ptr = static_cast<e::system::methodptr>(&func<f>);
 		};
 	}

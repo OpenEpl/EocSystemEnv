@@ -37,7 +37,7 @@ namespace e
 		{
 			static auto cast(e::system::any&& src)
 			{
-				return src;
+				return std::move(src);
 			}
 			static auto cast(e::system::any& src)
 			{

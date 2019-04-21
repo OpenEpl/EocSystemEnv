@@ -26,7 +26,7 @@ namespace e
 				vector.push_back(0);
 			}
 			typename TMarshal::NativeType& native = *reinterpret_cast<typename TMarshal::NativeType*>(&vector.at(p));
-			typename TMarshal::marshal(native, that);
+			TMarshal::marshal(native, that);
 		}
 
 		template<typename T, std::enable_if_t<!std::is_same_v<T, e::system::any>, int> = 0> void cleanupFromVector(std::vector<intptr_t> &vector, T& that)
@@ -35,7 +35,7 @@ namespace e
 			constexpr size_t elemCount = (sizeof(typename TMarshal::NativeType) + sizeof(intptr_t) - 1) / sizeof(intptr_t);
 			size_t p = vector.size() - elemCount;
 			typename TMarshal::NativeType& native = *reinterpret_cast<typename TMarshal::NativeType*>(&vector.at(p));
-			typename TMarshal::cleanup(native, that);
+			TMarshal::cleanup(native, that);
 			for (size_t i = 0; i < elemCount; i++)
 			{
 				vector.pop_back();
