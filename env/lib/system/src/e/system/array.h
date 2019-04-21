@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cstdint>
 #include <new>
+#include <stdexcept>
 namespace e
 {
 	namespace system
@@ -51,8 +52,16 @@ namespace e
 				}
 				delete data;
 			}
+			bool empty() const
+			{
+				return GetSize() == 0;
+			}
 			size_t* GetUBoundPtr() const
 			{
+				if (data == nullptr)
+				{
+					return nullptr;
+				}
 				return (size_t*)data + 1;
 			}
 			TElem* GetElemPtr() const
@@ -68,7 +77,7 @@ namespace e
 			size_t GetSize() const
 			{
 				size_t ndim = GetRank();
-				size_t size = ndim ? 1 : 0;
+				size_t size = 1;
 				for (size_t i = 1; i <= ndim; i++)
 				{
 					size *= GetUBound(i);
@@ -96,7 +105,7 @@ namespace e
 				}
 				return *this;
 			} 
-			basic_array& operator=(basic_array&& arr)
+			basic_array& operator=(basic_array&& arr) noexcept
 			{
 				this->~basic_array();
 				this->data = arr.data;
@@ -181,16 +190,32 @@ namespace e
 			}
 			size_t GetRank() const
 			{
-				return data == nullptr ? 0 : *(size_t*)data;
+				return data == nullptr ? 1 : *(size_t*)data;
 			}
 			//dimension从0开始 
 			size_t GetUBound_CStyle(size_t dimension) const
 			{
+				if (dimension >= GetRank())
+				{
+					throw std::out_of_range("e::system::basic_array RankCheck");
+				}
+				if (data == nullptr)
+				{
+					return 0;
+				}
 				return *((size_t*)data + 1 + dimension);
 			}
 			//dimension从1开始
 			size_t GetUBound(size_t dimension) const
 			{
+				if (dimension < 1 || dimension > GetRank())
+				{
+					throw std::out_of_range("e::system::basic_array RankCheck");
+				}
+				if (data == nullptr)
+				{
+					return 0;
+				}
 				return *((size_t*)data + dimension);
 			}
 			template <typename ... Args> TElem& At_CStyle(Args... indexes) const
@@ -198,9 +223,17 @@ namespace e
 				size_t idx[]{ size_t(indexes)... };
 				size_t ndim = sizeof...(indexes);
 				size_t offest = 0;
+				if (ndim != GetRank())
+				{
+					throw std::invalid_argument("e::system::basic_array RankCheck");
+				}
 				for (size_t i = 0; i < ndim; i++)
 				{
 					size_t t = idx[i];
+					if (t >= GetUBound_CStyle(i))
+					{
+						throw std::out_of_range("e::system::basic_array IndexCheck");
+					}
 					for (size_t j = i + 2; j <= ndim; j++)
 					{
 						t *= GetUBound(j);
@@ -217,20 +250,21 @@ namespace e
 
 			basic_array& operator+=(const basic_array& _Right)
 			{
-				auto ndim_r = _Right.GetRank();
-				if (ndim_r == 0)
+				if (_Right.empty())
 				{
 					return *this;
 				}
-				auto ndim = this->GetRank();
-				if (ndim == 0)
+				if (empty())
 				{
 					return this->operator=(_Right);
 				}
+
+				auto ndim_r = _Right.GetRank();
+				auto ndim = this->GetRank();
 				if (ndim != ndim_r)
-					throw std::exception{};
+					throw std::invalid_argument("Only two array with the same rank can be combined");
 				if (std::memcmp(this->GetUBoundPtr() + 1, _Right.GetUBoundPtr() + 1, (ndim - 1) * sizeof(size_t)) != 0)
-					throw std::exception{};
+					throw std::invalid_argument("Can't be combined");
 
 				auto lsize = this->GetSize();
 				auto rsize = _Right.GetSize();
@@ -267,6 +301,11 @@ namespace e
 		}
 		template <typename TElem> bool operator==(const basic_array<TElem>& _Left, const basic_array<TElem>& _Right)
 		{
+			if (_Left.empty())
+			{
+				return _Right.empty();
+			}
+
 			auto ndim = _Left.GetRank();
 			if (ndim != _Right.GetRank())
 				return false;
@@ -315,7 +354,7 @@ namespace e
 				basic_array<TElem>::operator=(std::forward<decltype(arr)>(arr));
 				return *this;
 			}
-			array<TElem>& operator=(array<TElem>&& arr)
+			array<TElem>& operator=(array<TElem>&& arr) noexcept
 			{
 				basic_array<TElem>::operator=(std::forward<decltype(arr)>(arr));
 				return *this;
@@ -353,7 +392,7 @@ namespace e
 				basic_array<uint8_t>::operator=(std::forward<decltype(arr)>(arr));
 				return *this;
 			}
-			bin& operator=(bin&& arr)
+			bin& operator=(bin&& arr) noexcept
 			{
 				basic_array<uint8_t>::operator=(std::forward<decltype(arr)>(arr));
 				return *this;
