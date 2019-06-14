@@ -1,0 +1,7 @@
+{
+    "cmake.sourceDirectory": "${workspaceRoot}/env/lib/system",
+    "cmake.configureSettings": {
+        "EocSystem_BUILD_TESTS":true
+    },
+    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
+}
