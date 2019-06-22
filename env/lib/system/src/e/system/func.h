@@ -16,6 +16,15 @@ namespace e
 		{
 			return std::reference_wrapper<T>(a);
 		}
+		template <typename T> std::remove_reference_t<T> noRef(T&& a)
+		{
+			return a;
+		}
+		template <typename T> std::remove_reference_t<T> noRef(T& a)
+		{
+			return a;
+		}
+		
 #define BYREF(t, x) e::system::forceRef<t>(x).get()
 #define BYREF_AUTO(x) e::system::forceRef(x).get()
 
