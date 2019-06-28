@@ -39,16 +39,24 @@ namespace e
 			{
 				return static_cast<TTarget>(src);
 			}
+			static auto cast(const TSrc& src)
+			{
+				return static_cast<TTarget>(src);
+			}
 		};
 
 		template <>
 		struct casting<e::system::any, e::system::any>
 		{
-			static auto cast(e::system::any&& src)
+			static e::system::any cast(e::system::any&& src)
 			{
 				return std::move(src);
 			}
-			static auto cast(e::system::any& src)
+			static e::system::any cast(e::system::any& src)
+			{
+				return src;
+			}
+			static e::system::any cast(const e::system::any& src)
 			{
 				return src;
 			}
@@ -82,7 +90,7 @@ namespace e
 
 		template<typename TTarget, typename TSrc> auto cast(TSrc&& src)
 		{
-			return casting<TTarget, TSrc>::cast(std::forward<TSrc>(src));
+			return casting<TTarget, std::remove_reference_t<TSrc>>::cast(std::forward<TSrc>(src));
 		}
 
 		e::system::bin make_bin(void* data, size_t size);
