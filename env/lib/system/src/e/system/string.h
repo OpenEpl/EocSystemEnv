@@ -1,6 +1,8 @@
 #pragma once
 #include <cstring>
 #include <utility>
+#include <iostream>
+#include <string>
 #include "constblock.h"
 namespace e
 {
@@ -125,6 +127,10 @@ namespace e
 					delete data;
 				}
 			}
+			friend std::ostream& operator<<(std::ostream& output, const string& myStr)
+			{
+				return output << myStr.c_str();
+			}
 		};
 		inline string operator+(const string& _Left, const string& _Right)
 		{
@@ -142,3 +148,42 @@ namespace e
 }
 
 #define EOC_STR_CONST(x) e::system::string(std::in_place, x)
+
+#ifdef CATCH_VERSION_MAJOR
+namespace Catch {
+    template<>
+    struct StringMaker<e::system::string> {
+		static std::string convert(e::system::string const& value ) {
+			auto length = value.len();
+			std::string s("\"");
+			for (size_t i = 0; i < length; i++)
+			{
+				auto c = value.data[i];
+				switch (c)
+				{
+				case '\r':
+					s.append("\\r");
+					break;
+				case '\f':
+					s.append("\\f");
+					break;
+				case '\n':
+					s.append("\\n");
+					break;
+				case '\t':
+					s.append("\\t");
+					break;
+				case '\"':
+					s.append("\\\"");
+					break;
+				default:
+					s.push_back(c);
+					break;
+				}
+			}
+			s.append("\"");
+			return s;
+        }
+    };
+}
+#endif
