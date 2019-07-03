@@ -127,6 +127,10 @@ namespace e
 					delete data;
 				}
 			}
+			bool isEmpty() const
+			{
+				return data == nullptr || data[0] == '\0';
+			}
 			friend std::ostream& operator<<(std::ostream& output, const string& myStr)
 			{
 				return output << myStr.c_str();

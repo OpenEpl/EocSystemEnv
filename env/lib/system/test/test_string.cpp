@@ -2,6 +2,13 @@
 #include <e/system/string.h>
 TEST_CASE("string", "[string]")
 {
+	SECTION("isEmpty")
+	{
+		CHECK_FALSE(EOC_STR_CONST("123456").isEmpty());
+		CHECK(e::system::string(nullptr).isEmpty());
+		CHECK(EOC_STR_CONST("").isEmpty());
+	}
+
 	SECTION("const string")
 	{
 		CHECK(EOC_STR_CONST("123456").isConst());
