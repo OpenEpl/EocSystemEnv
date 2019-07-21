@@ -364,6 +364,11 @@ namespace e
 				basic_array<TElem>::operator=(nullptr);
 				return *this;
 			}
+			array<TElem>& operator+=(const array<TElem>& _Right)
+			{
+				basic_array<TElem>::operator+=(_Right);
+				return *this;
+			}
 		};
 
 		struct bin : basic_array<uint8_t>
@@ -402,7 +407,26 @@ namespace e
 				basic_array<uint8_t>::operator=(nullptr);
 				return *this;
 			}
+			bin& operator+=(const bin& _Right)
+			{
+				basic_array<uint8_t>::operator+=(_Right);
+				return *this;
+			}
 		};
+
+		template <typename TElem> inline array<TElem> operator+(const array<TElem>& _Left, const array<TElem>& _Right)
+		{
+			array<TElem> r = _Left;
+			r += _Right;
+			return r;
+		}
+		
+		inline bin operator+(const bin& _Left, const bin& _Right)
+		{
+			bin r = _Left;
+			r += _Right;
+			return r;
+		}
 
 		template <typename T> struct is_e_array_type : std::bool_constant<false>
 		{
