@@ -113,7 +113,7 @@ namespace e
 			template<typename T> constexpr static auto isByValAnyArg_v = std::is_same_v<T, e::system::any>;
 			constexpr static int getIndexOfFirstByValAnyParam()
 			{
-				constexpr bool x[] = { isByValAnyArg_v<TArgs>...};
+				constexpr bool x[] = { isByValAnyArg_v<TArgs>..., false /* avoid size = 0 */};
 				for (int i = 0; i < sizeof(x); i++)        
 				{
 					if (x[i]) return i;
