@@ -199,7 +199,7 @@ namespace e
 			using NativeType = ManagedType;
 			static ManagedType receive(NativeType&& v)
 			{
-				return v;
+				return std::move(v);
 			}
 		};
 		template<> struct resultReceiver<void>
@@ -212,7 +212,7 @@ namespace e
 			using NativeType = char*;
 			static e::system::string receive(NativeType&& v)
 			{
-				return e::system::string(v);
+				return e::system::string(std::move(v));
 			}
 		};
 	}
