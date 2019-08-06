@@ -169,7 +169,7 @@ namespace e
 			const _Any_RuntimeInfo* runtimeInfo;
 			_Any_DataStorage storage;
 		public:
-			any() noexcept :typeInfo(nullptr), runtimeInfo(nullptr)
+			any() noexcept :typeInfo(nullptr), runtimeInfo(nullptr), storage()
 			{
 
 			}
@@ -177,7 +177,7 @@ namespace e
 			{
 				if (runtimeInfo != nullptr) runtimeInfo->destroy(storage);
 			}
-			template<class T> any(const T& value) : typeInfo(&typeid(T)), runtimeInfo(&_Any_RuntimeInfoInstance<T>)
+			template<class T> any(const T& value) : typeInfo(&typeid(T)), runtimeInfo(&_Any_RuntimeInfoInstance<T>), storage()
 			{
 				if constexpr (_Any_DataStorage::IsInlineType<T>)
 				{
