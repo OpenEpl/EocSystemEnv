@@ -3,6 +3,7 @@
 #include "methodptr_packager.h"
 #include "methodptr_caller.h"
 #include "temp_reference.h"
+#include "div_ext.h"
 namespace e
 {
 	namespace system
