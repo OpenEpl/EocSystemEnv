@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 #include <e/system/type_operator_traits.h>
+#include <iostream>
 using namespace e::system;
 TEST_CASE("type operator traits", "[type_operator_traits]")
 {
@@ -77,5 +78,43 @@ TEST_CASE("type operator traits", "[type_operator_traits]")
     {
         CHECK(has_neg_operator_v<int>);
         CHECK_FALSE(has_neg_operator_v<nullptr_t>);
+    }
+
+    SECTION("bit_and")
+    {
+        CHECK(has_bit_and_operator_v<int, int>);
+        CHECK_FALSE(has_bit_and_operator_v<double, double>);
+    }
+
+    SECTION("bit_or")
+    {
+        CHECK(has_bit_or_operator_v<int, int>);
+        CHECK_FALSE(has_bit_or_operator_v<double, double>);
+    }
+
+    SECTION("bit_xor")
+    {
+        CHECK(has_bit_xor_operator_v<int, int>);
+        CHECK_FALSE(has_bit_xor_operator_v<double, double>);
+    }
+
+    SECTION("bit_not")
+    {
+        CHECK(has_bit_not_operator_v<int>);
+        CHECK_FALSE(has_bit_not_operator_v<double>);
+    }
+
+    SECTION("shift_left")
+    {
+        CHECK(has_shift_left_operator_v<int, int>);
+        CHECK(has_shift_left_operator_v<std::iostream, int>);
+        CHECK_FALSE(has_shift_left_operator_v<double, int>);
+    }
+
+    SECTION("shift_right")
+    {
+        CHECK(has_shift_right_operator_v<int, int>);
+        CHECK_FALSE(has_shift_right_operator_v<std::iostream, int>);
+        CHECK_FALSE(has_shift_right_operator_v<double, int>);
     }
 }

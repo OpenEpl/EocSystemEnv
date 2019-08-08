@@ -111,6 +111,14 @@ namespace e
             virtual bool le(const e::system::any &a, const e::system::any &b) const = 0;
             virtual bool gt(const e::system::any &a, const e::system::any &b) const = 0;
             virtual bool ge(const e::system::any &a, const e::system::any &b) const = 0;
+
+            //Î»ÔËËã·û
+            virtual e::system::any bit_and(const e::system::any &a, const e::system::any &b) const = 0;
+            virtual e::system::any bit_or(const e::system::any &a, const e::system::any &b) const = 0;
+            virtual e::system::any bit_xor(const e::system::any &a, const e::system::any &b) const = 0;
+            virtual e::system::any bit_shift_left(const e::system::any &a, int b) const = 0;
+            virtual e::system::any bit_shift_right(const e::system::any &a, int b) const = 0;
+            virtual e::system::any bit_not(const e::system::any &a) const = 0;
         };
 
         class any
@@ -310,6 +318,30 @@ namespace e
             {
                 return a.runtimeInfo->ge(a, b);
             }
+            friend auto operator&(const e::system::any &a, const e::system::any &b)
+            {
+                return a.runtimeInfo->bit_and(a, b);
+            }
+            friend auto operator|(const e::system::any &a, const e::system::any &b)
+            {
+                return a.runtimeInfo->bit_or(a, b);
+            }
+            friend auto operator^(const e::system::any &a, const e::system::any &b)
+            {
+                return a.runtimeInfo->bit_xor(a, b);
+            }
+            friend auto operator<<(const e::system::any &a, int b)
+            {
+                return a.runtimeInfo->bit_shift_left(a, b);
+            }
+            friend auto operator>>(const e::system::any &a, int b)
+            {
+                return a.runtimeInfo->bit_shift_right(a, b);
+            }
+            e::system::any operator~()
+            {
+                return this->runtimeInfo->bit_not(*this);
+            }
             auto div_int(const e::system::any &that) const
             {
                 return this->runtimeInfo->div_int(*this, that);
@@ -461,26 +493,26 @@ namespace e
     {                                                                               \
         if constexpr (std::is_arithmetic_v<T>)                                      \
         {                                                                           \
-            if constexpr (checker<T, uint8_t>)                                      \
+            if constexpr (checker<std::add_const_t<T>, uint8_t>)                    \
                 if (b.type() == typeid(uint8_t))                                    \
                     return a.cast<T>() op b.cast<uint8_t>();                        \
-            if constexpr (checker<T, int16_t>)                                      \
+            if constexpr (checker<std::add_const_t<T>, const int16_t>)              \
                 if (b.type() == typeid(int16_t))                                    \
                     return a.cast<T>() op b.cast<int16_t>();                        \
-            if constexpr (checker<T, int32_t>)                                      \
+            if constexpr (checker<std::add_const_t<T>, const int32_t>)              \
                 if (b.type() == typeid(int32_t))                                    \
                     return a.cast<T>() op b.cast<int32_t>();                        \
-            if constexpr (checker<T, int64_t>)                                      \
+            if constexpr (checker<std::add_const_t<T>, const int64_t>)              \
                 if (b.type() == typeid(int64_t))                                    \
                     return a.cast<T>() op b.cast<int64_t>();                        \
-            if constexpr (checker<T, float>)                                        \
+            if constexpr (checker<std::add_const_t<T>, const float>)                \
                 if (b.type() == typeid(float))                                      \
                     return a.cast<T>() op b.cast<float>();                          \
-            if constexpr (checker<T, double>)                                       \
+            if constexpr (checker<std::add_const_t<T>, const double>)               \
                 if (b.type() == typeid(double))                                     \
                     return a.cast<T>() op b.cast<double>();                         \
         }                                                                           \
-        else if constexpr (checker<T, T>)                                           \
+        else if constexpr (checker<std::add_const_t<T>, std::add_const_t<T>>)       \
         {                                                                           \
             if (b.type() == typeid(T))                                              \
                 return a.cast<T>() op b.cast<T>();                                  \
@@ -499,6 +531,9 @@ namespace e
             __ImplementProcessorForBinaryOperator(gt, has_gt_operator_v, >, bool);
             __ImplementProcessorForBinaryOperator(ge, has_ge_operator_v, >=, bool);
 
+            __ImplementProcessorForBinaryOperator(bit_and, has_bit_and_operator_v, &, e::system::any);
+            __ImplementProcessorForBinaryOperator(bit_or, has_bit_or_operator_v, |, e::system::any);
+            __ImplementProcessorForBinaryOperator(bit_xor, has_bit_xor_operator_v, ^, e::system::any);
 #pragma pop_macro("__ImplementProcessorForBinaryOperator")
 
             virtual e::system::any div_float(const e::system::any &a, const e::system::any &b) const
@@ -558,7 +593,7 @@ namespace e
                     if (b.type() == typeid(double))
                         return e::system::mod(a.cast<T>(), b.cast<double>());
                 }
-                else if constexpr (has_mod_operator_v<T, T>)
+                else if constexpr (has_mod_operator_v<std::add_const_t<T>, std::add_const_t<T>>)
                 {
                     if (b.type() == typeid(T))
                         return a.cast<T>() % b.cast<T>();
@@ -566,10 +601,31 @@ namespace e
                 throw std::domain_error("Bad operator for this object");
             }
 
+            virtual e::system::any bit_shift_left(const e::system::any &a, int b) const
+            {
+                if constexpr (has_shift_left_operator_v<std::add_const_t<T>, const int>)
+                    return a.cast<T>() << b;
+                throw std::domain_error("Bad operator for this object");
+            }
+
+            virtual e::system::any bit_shift_right(const e::system::any &a, int b) const
+            {
+                if constexpr (has_shift_right_operator_v<std::add_const_t<T>, const int>)
+                    return a.cast<T>() >> b;
+                throw std::domain_error("Bad operator for this object");
+            }
+
             virtual e::system::any neg(const e::system::any &a) const
             {
-                if constexpr (has_neg_operator_v<T>)
+                if constexpr (has_neg_operator_v<std::add_const_t<T>>)
                     return -a.cast<T>();
+                throw std::domain_error("Bad operator for this object");
+            }
+
+            virtual e::system::any bit_not(const e::system::any &a) const
+            {
+                if constexpr (has_bit_not_operator_v<std::add_const_t<T>>)
+                    return ~a.cast<T>();
                 throw std::domain_error("Bad operator for this object");
             }
 #if defined(_MSC_VER)

@@ -31,4 +31,6 @@ TEST_CASE("Runtime Any", "[any]")
 
     x = EOC_STR_CONST("Hello World");
     CHECK(x + EOC_STR_CONST(".www") == EOC_STR_CONST("Hello World.www"));
+
+    CHECK(((e::system::any(123) & 456 ^ 789 | 996) << 1) - 39 == 2003);
 }
