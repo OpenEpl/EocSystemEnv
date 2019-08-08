@@ -230,13 +230,13 @@ namespace e
 				for (size_t i = 0; i < ndim; i++)
 				{
 					size_t t = idx[i];
-					if (t >= GetUBound_CStyle(i))
+					if (idx[i] >= GetUBound_CStyle(i))
 					{
 						throw std::out_of_range("e::system::basic_array IndexCheck");
 					}
-					for (size_t j = i + 2; j <= ndim; j++)
+					for (size_t j = i + 1; j < ndim; j++)
 					{
-						t *= GetUBound(j);
+						t *= GetUBound_CStyle(j);
 					}
 					offest += t;
 				}
