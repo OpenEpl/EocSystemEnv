@@ -321,6 +321,23 @@ namespace e
 					new(target) TElem(std::move(newElems[i - startIndex]));
                 }, newSize);
             }
+
+			TElem* begin()
+			{
+				return GetElemPtr();
+			}
+			TElem* begin() const
+			{
+				return GetElemPtr();
+			}
+			TElem* end()
+			{
+				return begin() + GetSize();
+			}
+			TElem* end() const
+			{
+				return begin() + GetSize();
+			}
 		};
 		template <typename TElem> inline basic_array<TElem> operator+(const basic_array<TElem>& _Left, const basic_array<TElem>& _Right)
 		{

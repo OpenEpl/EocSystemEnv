@@ -113,3 +113,18 @@ TEST_CASE("Append to array", "[array]")
     x.Append(5, 6, 7, 8, 9);
     CHECK(x == e::system::array<int>{1, 2, 3, 4, 5, 6, 7, 8, 9});
 }
+
+TEST_CASE("begin/end for array", "[array]")
+{
+    e::system::array<int> emptyArray(0u);
+    e::system::array<int> nullArray(nullptr);
+    CHECK(emptyArray.begin() == emptyArray.end());
+    CHECK(nullArray.begin() == nullArray.end());
+    e::system::array<int> x = {1, 2, 3, 4};
+	int i = 1;
+    for (auto pElem = x.begin(); pElem < x.end(); pElem++)
+    {
+		CHECK(*pElem == i);
+		i++;
+    }
+}
