@@ -85,14 +85,14 @@ namespace e
 				}
 				else
 				{
-					return src.cast<TTarget>;
+					return src.cast<TTarget>();
 				}
 			}
 		};
 
 		template<typename TTarget, typename TSrc> auto cast(TSrc&& src)
 		{
-			return casting<TTarget, std::remove_reference_t<TSrc>>::cast(std::forward<TSrc>(src));
+			return casting<TTarget, std::remove_const_t<std::remove_reference_t<TSrc>>>::cast(std::forward<TSrc>(src));
 		}
 
 		e::system::bin make_bin(void* data, size_t size);
