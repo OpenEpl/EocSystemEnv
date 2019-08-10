@@ -4,6 +4,7 @@
 #include "methodptr_caller.h"
 #include "temp_reference.h"
 #include "div_ext.h"
+#include "native_string.h"
 namespace e
 {
 	namespace system
