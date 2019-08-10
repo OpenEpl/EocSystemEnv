@@ -66,9 +66,9 @@ namespace e
 			static constexpr bool SameMemoryStruct = false;
 			static void marshal(NativeType &v, ManagedType &r)
 			{
-				if (ElemMarshalerType::SameMemoryStruct)
+				if constexpr (ElemMarshalerType::SameMemoryStruct)
 				{
-					v = r.data != 0 ? &r.At_CStyle(0) : nullptr;
+					v = reinterpret_cast<NativeType>(r.GetElemPtr());
 				}
 				else
 				{
