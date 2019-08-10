@@ -9,6 +9,14 @@ namespace e
 	{
 		template <typename TElem> struct basic_array
 		{
+			struct DefaultElemInitializer
+			{
+				void operator() (size_t index, TElem* target)
+				{
+					new(target) TElem();
+				}
+			};
+
 			void* data;
 			basic_array(const std::initializer_list<TElem> &v) : basic_array(v.size())
 			{
@@ -118,7 +126,8 @@ namespace e
 				this->data = nullptr;
 				return *this;
 			}
-			void RedimWithDynamicRank(bool preserve, size_t ndim, size_t* dim)
+			template <typename TElemInitializer>
+			void RedimWithDynamicRank(bool preserve, TElemInitializer elemInitializer, size_t ndim, size_t* dim)
 			{
 				size_t size = ndim ? 1 : 0;
 				for (size_t i = 0; i < ndim; i++)
@@ -145,14 +154,19 @@ namespace e
 					}
 					else
 					{
-						new(&elem[i]) TElem();
+						elemInitializer(i, &elem[i]);
 					}
 				}
 
 				this->~basic_array();
 				data = newDataPtr;
 			}
-			template <typename ... Args> void Redim(bool preserve, Args... dims)
+			void RedimWithDynamicRank(bool preserve, size_t ndim, size_t* dim)
+			{
+				RedimWithDynamicRank(preserve, DefaultElemInitializer(), ndim, dim);
+			}
+			template <typename TElemInitializer, typename ... Args>
+			void RedimWithCustomElemInitializer(bool preserve, TElemInitializer elemInitializer, Args... dims)
 			{
 				size_t dim[]{ size_t(dims)... };
 				size_t ndim = sizeof...(dims);
@@ -181,18 +195,23 @@ namespace e
 					}
 					else
 					{
-						new(&elem[i]) TElem();
+						elemInitializer(i, &elem[i]);
 					}
 				}
 
 				this->~basic_array();
 				data = newDataPtr;
 			}
+			template <typename ... Args>
+			void Redim(bool preserve, Args... dims)
+			{
+				RedimWithCustomElemInitializer(preserve, DefaultElemInitializer(), dims...);
+			}
 			size_t GetRank() const
 			{
 				return data == nullptr ? 1 : *(size_t*)data;
 			}
-			//dimension从0开始 
+			//dimension>=0 
 			size_t GetUBound_CStyle(size_t dimension) const
 			{
 				if (dimension >= GetRank())
@@ -205,7 +224,7 @@ namespace e
 				}
 				return *((size_t*)data + 1 + dimension);
 			}
-			//dimension从1开始
+			//dimension>=1
 			size_t GetUBound(size_t dimension) const
 			{
 				if (dimension < 1 || dimension > GetRank())
@@ -292,6 +311,16 @@ namespace e
 
 				return *this;
 			}
+            template <typename... TArgs>
+            void Append(TArgs ... newElem)
+            {
+                size_t startIndex = GetSize();
+                size_t newSize = startIndex + sizeof...(newElem);
+				TElem newElems[] = {static_cast<TElem>(newElem)...};
+                RedimWithCustomElemInitializer(true, [&newElems, startIndex](size_t i, TElem *target) {
+					new(target) TElem(std::move(newElems[i - startIndex]));
+                }, newSize);
+            }
 		};
 		template <typename TElem> inline basic_array<TElem> operator+(const basic_array<TElem>& _Left, const basic_array<TElem>& _Right)
 		{
