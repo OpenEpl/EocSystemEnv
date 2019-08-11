@@ -179,12 +179,12 @@ namespace e
                 }
                 return *this;
             }
-            any(const e::system::any &x) : typeInfo(x.typeInfo), runtimeInfo(x.runtimeInfo)
+            any(const e::system::any &x) : typeInfo(x.typeInfo), runtimeInfo(x.runtimeInfo), storage()
             {
                 if (runtimeInfo != nullptr)
                     runtimeInfo->clone(x.storage, storage);
             }
-            any(e::system::any &&x) noexcept : typeInfo(x.typeInfo), runtimeInfo(x.runtimeInfo)
+            any(e::system::any &&x) noexcept : typeInfo(x.typeInfo), runtimeInfo(x.runtimeInfo), storage()
             {
                 if (runtimeInfo != nullptr)
                 {
