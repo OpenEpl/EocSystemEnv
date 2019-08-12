@@ -27,6 +27,21 @@ namespace e
 		};
 
 		//String
+		template<> struct marshaler<bool>
+		{
+			using NativeType = int;
+			static constexpr bool SameMemoryStruct = false;
+			static void marshal(NativeType &v, bool &r)
+			{
+				v = (int)r;
+			}
+			static void cleanup(NativeType &v, bool &r)
+			{
+				r = v != 0;
+			}
+		};
+
+		//String
 		template<> struct marshaler<e::system::string>
 		{
 			using NativeType = char*;
