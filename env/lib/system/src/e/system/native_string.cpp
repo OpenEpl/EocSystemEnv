@@ -28,6 +28,32 @@ std::unique_ptr<char[]> e::system::ToNativeUtf8String(const e::system::string &x
     WideCharToMultiByte(CP_UTF8, 0, wideString.get(), wideLen, result.get(), len, nullptr, nullptr);
     return result;
 }
+
+e::system::string e::system::ReceiveNativeWideString(const wchar_t *x)
+{
+    if (!x)
+        return nullptr;
+    auto wideLen = wcslen(x);
+    auto len = WideCharToMultiByte(CP_ACP, 0, x, wideLen, nullptr, 0, nullptr, nullptr);
+    e::system::string result(len);
+    if (len)
+    {
+        WideCharToMultiByte(CP_ACP, 0, x, wideLen, result.c_str(), len, nullptr, nullptr);
+        result.data[len] = '\0';
+    }
+    return result;
+}
+
+e::system::string e::system::ReceiveNativeUtf8String(const char *x)
+{
+    if (!x)
+        return nullptr;
+    auto len = strlen(x) + 1;
+    auto wideLen = MultiByteToWideChar(CP_UTF8, 0, x, len, nullptr, 0);
+    auto result = std::make_unique<wchar_t[]>(wideLen);
+    MultiByteToWideChar(CP_UTF8, 0, x, len, result.get(), wideLen);
+    return ReceiveNativeWideString(result.get());
+}
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
