@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 extern "C"
 {
 	__declspec(dllimport) intptr_t __stdcall LoadLibraryW(const wchar_t* lpLibFileName);

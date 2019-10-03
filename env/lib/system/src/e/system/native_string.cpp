@@ -1,4 +1,4 @@
-#include "native_string.h"
+﻿#include "native_string.h"
 #include "Windows.h"
 #include <codecvt>
 

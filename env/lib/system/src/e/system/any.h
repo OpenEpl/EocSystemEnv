@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <new>
 #include <typeinfo>
 #include <vector>
@@ -85,7 +85,7 @@ namespace e
             virtual void clone(const _Any_DataStorage &that, _Any_DataStorage &target) const = 0;
             virtual void move(_Any_DataStorage &that, _Any_DataStorage &target) const noexcept = 0;
             virtual void destroy(_Any_DataStorage &that) const noexcept = 0;
-            //·âËÍ
+            //å°é€
             virtual void byRef_Marshal(void *&v, _Any_DataStorage &that) const = 0;
             virtual void byRef_Cleanup(void *&v, _Any_DataStorage &that) const = 0;
             virtual void byVal_MarshalToVector(std::vector<intptr_t> &stack, _Any_DataStorage &that) const = 0;
@@ -94,7 +94,7 @@ namespace e
             virtual void byVal_Marshal(__int64 &v, _Any_DataStorage &that) const = 0;
             virtual void byVal_Cleanup(__int64 &v, _Any_DataStorage &that) const = 0;
 #endif
-            //ËãÊõÔËËã·û
+            //ç®—æœ¯è¿ç®—ç¬¦
             virtual e::system::any add(const e::system::any &a, const e::system::any &b) const = 0;
             virtual e::system::any sub(const e::system::any &a, const e::system::any &b) const = 0;
             virtual e::system::any mul(const e::system::any &a, const e::system::any &b) const = 0;
@@ -104,7 +104,7 @@ namespace e
             virtual e::system::any mod(const e::system::any &a, const e::system::any &b) const = 0;
             virtual e::system::any neg(const e::system::any &a) const = 0;
 
-            //±È½ÏÔËËã·û
+            //æ¯”è¾ƒè¿ç®—ç¬¦
             virtual bool eq(const e::system::any &a, const e::system::any &b) const = 0;
             virtual bool ne(const e::system::any &a, const e::system::any &b) const = 0;
             virtual bool lt(const e::system::any &a, const e::system::any &b) const = 0;
@@ -112,7 +112,7 @@ namespace e
             virtual bool gt(const e::system::any &a, const e::system::any &b) const = 0;
             virtual bool ge(const e::system::any &a, const e::system::any &b) const = 0;
 
-            //Î»ÔËËã·û
+            //ä½è¿ç®—ç¬¦
             virtual e::system::any bit_and(const e::system::any &a, const e::system::any &b) const = 0;
             virtual e::system::any bit_or(const e::system::any &a, const e::system::any &b) const = 0;
             virtual e::system::any bit_xor(const e::system::any &a, const e::system::any &b) const = 0;
@@ -381,7 +381,7 @@ namespace e
             cleanupFromVector(vector, that);
         }
 
-        //¶Ô½á¹¹ÌåÄÚÍ¨ÓÃĞÍÖ»Ö§³Ö´«Ö··âËÍ
+        //å¯¹ç»“æ„ä½“å†…é€šç”¨å‹åªæ”¯æŒä¼ å€å°é€
         template <>
         struct marshaler<e::system::any>
         {
@@ -400,7 +400,7 @@ namespace e
         struct refMarshaler<e::system::any> : marshaler<e::system::any>
         {
         };
-        //¶ÔÍ¨ÓÃĞÍ²ÎÊıµÄ´«Öµ·âËÍÓÉCallerÊµÏÖ
+        //å¯¹é€šç”¨å‹å‚æ•°çš„ä¼ å€¼å°é€ç”±Callerå®ç°
         template <>
         struct valMarshaler<e::system::any> : refMarshaler<e::system::any>
         {
@@ -444,7 +444,7 @@ namespace e
                     delete that.get<T>();
                 }
             }
-            //·âËÍ
+            //å°é€
             virtual void byRef_Marshal(void *&v, _Any_DataStorage &that) const
             {
                 using TMarshal = refMarshaler<T>;

@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+﻿#include <catch2/catch.hpp>
 #include <e/system/any.h>
 
 TEST_CASE("Runtime Any", "[any]")

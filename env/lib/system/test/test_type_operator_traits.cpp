@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+﻿#include <catch2/catch.hpp>
 #include <e/system/type_operator_traits.h>
 #include <iostream>
 using namespace e::system;

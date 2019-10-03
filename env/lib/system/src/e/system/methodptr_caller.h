@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "marshaler.h"
 #include "any.h"
 namespace e
@@ -132,10 +132,10 @@ namespace e
 				if constexpr (indexOfFirstAnyParam != -1)
 				{
 #ifdef _M_X64
-					//²Î¿¼ https://docs.microsoft.com/zh-cn/cpp/build/x64-calling-convention#varargs
-					//Ê¹ÓÃVarargs²¢ÊµÏÖParamMarshalHelper<e::system::any>²úÉúdouble£¬¿É±£Ö¤ ¸¡µã¼Ä´æÆ÷ ºÍ ÕûÊı¼Ä´æÆ÷ ¶¼´æÔÚÖµ
+					//å‚è€ƒ https://docs.microsoft.com/zh-cn/cpp/build/x64-calling-convention#varargs
+					//ä½¿ç”¨Varargså¹¶å®ç°ParamMarshalHelper<e::system::any>äº§ç”Ÿdoubleï¼Œå¯ä¿è¯ æµ®ç‚¹å¯„å­˜å™¨ å’Œ æ•´æ•°å¯„å­˜å™¨ éƒ½å­˜åœ¨å€¼
 
-					//×¢2£ºstdcallÓëcdcelÔÚx64¶¼»á±»ºöÂÔ£¬²¢Ê¹ÓÃ±ê×¼x64µ÷ÓÃÔ¼¶¨
+					//æ³¨2ï¼šstdcallä¸cdcelåœ¨x64éƒ½ä¼šè¢«å¿½ç•¥ï¼Œå¹¶ä½¿ç”¨æ ‡å‡†x64è°ƒç”¨çº¦å®š
 					typename resultReceiver<TResult>::NativeType (*pFunc)(...);
 					pFunc = static_cast<decltype(pFunc)>(func);
 					if constexpr (std::is_void_v<TResult>)
@@ -148,14 +148,14 @@ namespace e
 					}
 #endif
 #ifdef _M_IX86
-					//²Î¿¼£º
+					//å‚è€ƒï¼š
 					//https://docs.microsoft.com/en-us/cpp/cpp/stdcall
 					//https://docs.microsoft.com/en-us/cpp/cpp/calling-example-function-prototype-and-call
 					//https://docs.microsoft.com/en-us/cpp/cpp/results-of-calling-example
-					//stdcall¶Ôdouble, int64µÈQWORDÀàĞÍĞèÒª8bytesÕ»¿Õ¼ä£¨»ò¸ü¶à£©£¬¶ø¶ÔÓÚÆäËûÊı¾İÖ»ĞèÒª4bytes¿Õ¼ä¡£
-					//ÕâÒâÎ¶ÕâÎŞ·¨Ïñx64ÄÇÑùÔÚ±àÒëÊ±È·¶¨Õ»¿Õ¼ä´óĞ¡
+					//stdcallå¯¹double, int64ç­‰QWORDç±»å‹éœ€è¦8bytesæ ˆç©ºé—´ï¼ˆæˆ–æ›´å¤šï¼‰ï¼Œè€Œå¯¹äºå…¶ä»–æ•°æ®åªéœ€è¦4bytesç©ºé—´ã€‚
+					//è¿™æ„å‘³è¿™æ— æ³•åƒx64é‚£æ ·åœ¨ç¼–è¯‘æ—¶ç¡®å®šæ ˆç©ºé—´å¤§å°
 
-					std::vector<intptr_t> paramVector; //×¢£º´Ë´¦ÎªÕıĞò£¬Çø±ğÓÚstdcall
+					std::vector<intptr_t> paramVector; //æ³¨ï¼šæ­¤å¤„ä¸ºæ­£åºï¼ŒåŒºåˆ«äºstdcall
 					marshalToVector<TArgs...>(paramVector, args...);
 					typename resultReceiver<TResult>::NativeType(__fastcall *pCallerFunc)(void*, void*, size_t);
 					if constexpr (callingConvention == CallingConventions::Cdcel)

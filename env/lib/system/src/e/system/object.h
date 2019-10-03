@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 namespace e
 {
 	namespace system
@@ -13,7 +13,7 @@ namespace e
 			virtual basic_object* __stdcall clone() = 0;
 		};
 
-		//ÀàËÆstd::unique_ptrµ«¿ÉÒÔÖ§³Ö¸´ÖÆ£¨¶ÔÓ¦¸´ÖÆÄÚ²¿¶ÔÏó£¬·ÇARC/GC£©
+		//ç±»ä¼¼std::unique_pträ½†å¯ä»¥æ”¯æŒå¤åˆ¶ï¼ˆå¯¹åº”å¤åˆ¶å†…éƒ¨å¯¹è±¡ï¼ŒéARC/GCï¼‰
 		template <typename TElem> struct object_ptr
 		{
 			basic_object* data;

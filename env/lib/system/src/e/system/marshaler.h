@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <cstdint>
 #include <cstring>
 #include <type_traits>
@@ -178,12 +178,12 @@ namespace e
 		template<> struct refMarshaler<e::system::string> : marshaler<e::system::string>
 		{
 		};
-		//refMarshaler²»ÄÜ½ÓÊÜconstÀàĞÍ
+		//refMarshalerä¸èƒ½æ¥å—constç±»å‹
 		template<typename ManagedType> struct refMarshaler<const ManagedType>
 		{
 
 		};
-		//ÒıÓÃÀàĞÍ
+		//å¼•ç”¨ç±»å‹
 		template<typename ManagedType> struct refMarshaler<ManagedType&> : refMarshaler<ManagedType>
 		{
 		};
@@ -200,7 +200,7 @@ namespace e
 		template<typename ElemType> struct valMarshaler<e::system::object_ptr<ElemType>> : refMarshaler<e::system::object_ptr<ElemType>>
 		{
 		};
-		//ÒıÓÃÀàĞÍ-->refMarshaler
+		//å¼•ç”¨ç±»å‹-->refMarshaler
 		template<typename ManagedType> struct valMarshaler<ManagedType&> : refMarshaler<ManagedType>
 		{
 		};

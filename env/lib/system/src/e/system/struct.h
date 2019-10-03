@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #pragma once
 namespace e
 {
 	namespace system
 	{
-		//ÀàËÆstd::unique_ptrµ«¿ÉÒÔÖ§³Ö¸´ÖÆ£¨¶ÔÓ¦¸´ÖÆÄÚ²¿¶ÔÏó£¬·ÇARC/GC£©
+		//ç±»ä¼¼std::unique_pträ½†å¯ä»¥æ”¯æŒå¤åˆ¶ï¼ˆå¯¹åº”å¤åˆ¶å†…éƒ¨å¯¹è±¡ï¼ŒéARC/GCï¼‰
 		template <typename TElem> struct struct_ptr
 		{
 			TElem* data;

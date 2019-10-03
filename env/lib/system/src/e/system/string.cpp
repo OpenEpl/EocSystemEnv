@@ -1,4 +1,4 @@
-#include <cstring>
+﻿#include <cstring>
 #include "string.h"
 
 static int cmp_str(const e::system::string & _Left, const e::system::string & _Right)

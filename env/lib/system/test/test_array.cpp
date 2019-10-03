@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+﻿#include <catch2/catch.hpp>
 #include <e/system/array.h>
 #include <e/system/string.h>
 

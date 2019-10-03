@@ -4,7 +4,7 @@
         "EocSystem_BUILD_TESTS":true
     },
     "[cpp]": {
-        "files.encoding": "gb18030"
+        "files.encoding": "utf8bom"
     },
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
     "files.associations": {

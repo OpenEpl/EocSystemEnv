@@ -1,4 +1,4 @@
-#include "constblock.h"
+﻿#include "constblock.h"
 #include "windows.h"
 
 namespace e

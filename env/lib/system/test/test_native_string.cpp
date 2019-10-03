@@ -1,10 +1,10 @@
-#include <catch2/catch.hpp>
+ï»¿#include <catch2/catch.hpp>
 #include <e/system/native_string.h>
 TEST_CASE("native string", "[native_string]")
 {
-    auto normal = "ÊÀ½çÄúºÃ";
-    auto wide = L"ÊÀ½çÄúºÃ";
-    auto utf8 = u8"ÊÀ½çÄúºÃ";
+    auto normal = "ä¸–ç•Œæ‚¨å¥½";
+    auto wide = L"ä¸–ç•Œæ‚¨å¥½";
+    auto utf8 = u8"ä¸–ç•Œæ‚¨å¥½";
     CHECK(wcscmp(e::system::ToNativeWideString(normal).get(), wide) == 0);
     CHECK(strcmp(e::system::ToNativeUtf8String(normal).get(), utf8) == 0);
     CHECK(e::system::ReceiveNativeWideString(wide) == normal);

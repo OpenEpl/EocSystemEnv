@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "basic_type.h"
 #include "methodptr_packager.h"
 #include "methodptr_caller.h"
