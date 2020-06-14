@@ -121,6 +121,9 @@ namespace e
             virtual e::system::any bit_not(const e::system::any &a) const = 0;
         };
 
+        template <class T>
+        constexpr static const _Any_RuntimeInfo *_Any_GetRuntimeInfoInstance();
+        
         class any
         {
         private:
@@ -138,7 +141,7 @@ namespace e
                     runtimeInfo->destroy(storage);
             }
             template <class T>
-            any(const T &value) : typeInfo(&typeid(T)), runtimeInfo(&_Any_RuntimeInfoInstance<T>), storage()
+            any(const T &value) : typeInfo(&typeid(T)), runtimeInfo(_Any_GetRuntimeInfoInstance<T>()), storage()
             {
                 if constexpr (_Any_DataStorage::IsInlineType<T>)
                 {
@@ -635,5 +638,11 @@ namespace e
 
         template <class T>
         constexpr static _Any_RuntimeInfoImpl<T> _Any_RuntimeInfoInstance{};
+
+        template <class T>
+        constexpr static const _Any_RuntimeInfo *_Any_GetRuntimeInfoInstance()
+        {
+            return std::addressof(_Any_RuntimeInfoInstance<T>);
+        }
     }
 }
