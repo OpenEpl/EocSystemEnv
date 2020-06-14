@@ -29,5 +29,4 @@ build:
 test_script:
 - cmd: |
     cd %APPVEYOR_BUILD_FOLDER%/env/lib/system/build/test/%CONFIGURATION%
-    EocSystem_Test.exe -r junit -o test_result.xml
-    curl -F "file=@test_result.xml" "https://ci.appveyor.com/api/testresults/junit/%APPVEYOR_JOB_ID%"
+    EocSystem_Test.exe -r junit -o test_result.xml & curl -F "file=@test_result.xml" "https://ci.appveyor.com/api/testresults/junit/%APPVEYOR_JOB_ID%"
