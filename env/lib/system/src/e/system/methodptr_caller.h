@@ -47,6 +47,54 @@ namespace e
 		}
 #endif 
 
+		template<typename T> struct ParamMarshalHelper
+		{
+		private:
+			using TMarshal = valMarshaler<T>;
+		public:
+			using NativeType = typename TMarshal::NativeType;
+		private:
+			T& value;
+			NativeType x;
+		public:
+			ParamMarshalHelper(T& _value) :value(_value)
+			{
+				TMarshal::marshal(x, value);
+			}
+			~ParamMarshalHelper()
+			{
+				TMarshal::cleanup(x, value);
+			}
+			NativeType& get()
+			{
+				return x;
+			}
+		};
+
+#ifdef _M_X64
+		template<> struct ParamMarshalHelper<e::system::any>
+		{
+		public:
+			using NativeType = double;
+		private:
+			typename e::system::any& value;
+			double x;
+		public:
+			ParamMarshalHelper(e::system::any& _value) :value(_value)
+			{
+				value.byVal_Marshal(reinterpret_cast<__int64 &>(x));
+			}
+			~ParamMarshalHelper()
+			{
+				value.byVal_Cleanup(reinterpret_cast<__int64 &>(x));
+			}
+			double& get()
+			{
+				return x;
+			}
+		};
+#endif
+
 		enum class CallingConventions
 		{
 			StdCall,
@@ -61,66 +109,8 @@ namespace e
 		struct MethodPtrCaller<TResult(TArgs...)>
 		{
 		private:
-
-			template<typename T> struct ParamMarshalHelper
-			{
-			private:
-				using TMarshal = valMarshaler<T>;
-			public:
-				using NativeType = typename TMarshal::NativeType;
-			private:
-				T& value;
-				NativeType x;
-			public:
-				ParamMarshalHelper(T& _value) :value(_value)
-				{
-					TMarshal::marshal(x, value);
-				}
-				~ParamMarshalHelper()
-				{
-					TMarshal::cleanup(x, value);
-				}
-				NativeType& get()
-				{
-					return x;
-				}
-			};
-
-#ifdef _M_X64
-			template<> struct ParamMarshalHelper<e::system::any>
-			{
-			public:
-				using NativeType = double;
-			private:
-				typename e::system::any& value;
-				double x;
-			public:
-				ParamMarshalHelper(e::system::any& _value) :value(_value)
-				{
-					value.byVal_Marshal(reinterpret_cast<__int64 &>(x));
-				}
-				~ParamMarshalHelper()
-				{
-					value.byVal_Cleanup(reinterpret_cast<__int64 &>(x));
-				}
-				double& get()
-				{
-					return x;
-				}
-			};
-#endif
-
-			template<typename T> constexpr static auto isByValAnyArg_v = std::is_same_v<T, e::system::any>;
-			constexpr static int getIndexOfFirstByValAnyParam()
-			{
-				constexpr bool x[] = { isByValAnyArg_v<TArgs>..., false /* avoid size = 0 */};
-				for (int i = 0; i < sizeof(x); i++)        
-				{
-					if (x[i]) return i;
-				}
-				return -1;
-			};
-
+			template<typename T> constexpr static bool isByValAnyArg_v = std::is_same_v<T, e::system::any>;
+			
 		public:
 			template <CallingConventions callingConvention = CallingConventions::StdCall>
 			static TResult call(void* func, TArgs... args)
@@ -128,8 +118,7 @@ namespace e
 				using FuncPtrType = std::conditional_t<callingConvention == CallingConventions::Cdcel, 
 					typename resultReceiver<TResult>::NativeType (__cdecl *)(typename ParamMarshalHelper<TArgs>::NativeType...),
 					typename resultReceiver<TResult>::NativeType (__stdcall *)(typename ParamMarshalHelper<TArgs>::NativeType...)> ;
-				constexpr auto indexOfFirstAnyParam = getIndexOfFirstByValAnyParam();
-				if constexpr (indexOfFirstAnyParam != -1)
+				if constexpr ((false || ... || isByValAnyArg_v<TArgs>))
 				{
 #ifdef _M_X64
 					//参考 https://docs.microsoft.com/zh-cn/cpp/build/x64-calling-convention#varargs
@@ -137,7 +126,7 @@ namespace e
 
 					//注2：stdcall与cdcel在x64都会被忽略，并使用标准x64调用约定
 					typename resultReceiver<TResult>::NativeType (*pFunc)(...);
-					pFunc = static_cast<decltype(pFunc)>(func);
+					pFunc = reinterpret_cast<decltype(pFunc)>(func);
 					if constexpr (std::is_void_v<TResult>)
 					{
 						return pFunc(ParamMarshalHelper<TArgs>(args).get()...);
@@ -182,7 +171,7 @@ namespace e
 				else
 				{
 					FuncPtrType pFunc;
-					pFunc = static_cast<decltype(pFunc)>(func);
+					pFunc = reinterpret_cast<decltype(pFunc)>(func);
 					if constexpr (std::is_void_v<TResult>)
 					{
 						return pFunc(ParamMarshalHelper<TArgs>(args).get()...);
