@@ -124,7 +124,7 @@ namespace e
         class any
         {
         private:
-            const type_info *typeInfo;
+            const std::type_info *typeInfo;
             const _Any_RuntimeInfo *runtimeInfo;
             _Any_DataStorage storage;
 
@@ -192,7 +192,7 @@ namespace e
                     x.reset();
                 }
             }
-            const type_info &type() const noexcept
+            const std::type_info &type() const noexcept
             {
                 return has_value() ? *typeInfo : typeid(void);
             }
