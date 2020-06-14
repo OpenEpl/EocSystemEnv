@@ -1,5 +1,11 @@
 ﻿#include <catch2/catch.hpp>
 #include <e/system/string.h>
+
+e::system::string getAConstString()
+{
+    return EOC_STR_CONST("123");
+}
+
 TEST_CASE("string", "[string]")
 {
 	SECTION("isEmpty")
@@ -7,12 +13,6 @@ TEST_CASE("string", "[string]")
 		CHECK_FALSE(EOC_STR_CONST("123456").isEmpty());
 		CHECK(e::system::string(nullptr).isEmpty());
 		CHECK(EOC_STR_CONST("").isEmpty());
-	}
-
-	SECTION("const string")
-	{
-		CHECK(EOC_STR_CONST("123456").isConst());
-		CHECK_FALSE(e::system::string("123456").isConst());
 	}
 
 	SECTION("compare")
@@ -50,7 +50,7 @@ TEST_CASE("string", "[string]")
 		CHECK(e::system::string(nullptr) + EOC_STR_CONST("def") == EOC_STR_CONST("def"));
 
 
-		CHECK((EOC_STR_CONST("asd") += EOC_STR_CONST("fgh")) == EOC_STR_CONST("asdfgh"));
+		CHECK((EOC_STR_CONST("asd") + EOC_STR_CONST("fgh")) == EOC_STR_CONST("asdfgh"));
 	}
 
 	SECTION("copy and move")
@@ -65,5 +65,8 @@ TEST_CASE("string", "[string]")
 		e::system::string z = std::move(x);
 		x = nullptr;
 		CHECK(z == EOC_STR_CONST("asd"));
+
+		e::system::string a = getAConstString();
+        CHECK(a == EOC_STR_CONST("123"));
 	}
 }

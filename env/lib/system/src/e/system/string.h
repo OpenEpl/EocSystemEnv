@@ -3,7 +3,6 @@
 #include <utility>
 #include <iostream>
 #include <string>
-#include "constblock.h"
 namespace e
 {
 	namespace system
@@ -12,10 +11,6 @@ namespace e
 		{
 		public:
 			char* data;
-			bool isConst() const noexcept
-			{
-				return isConstBlock(data);
-			}
 
 			string() noexcept : data(nullptr)
 			{
@@ -39,10 +34,6 @@ namespace e
 				this->data[0] = '\0';
 			}
 			string(std::nullptr_t) noexcept : data(nullptr)
-			{
-
-			}
-			string(std::in_place_t, const char* e) noexcept : data((char*)e)
 			{
 
 			}
@@ -122,10 +113,7 @@ namespace e
 			}
 			~string() noexcept
 			{
-				if (!isConst())
-				{
-					delete data;
-				}
+				delete data;
 			}
 			bool isEmpty() const
 			{
@@ -151,7 +139,20 @@ namespace e
 	}
 }
 
-#define EOC_STR_CONST(x) e::system::string(std::in_place, x)
+struct _e_const_string
+{
+public:
+    const char* data;
+    constexpr _e_const_string(const char *data) : data(data)
+    {
+    }
+    auto getPtr() const
+    {
+        return reinterpret_cast<const e::system::string *>(this);
+    }
+};
+
+#define EOC_STR_CONST(x) (*_e_const_string(x).getPtr())
 
 #ifdef CATCH_VERSION_MAJOR
 namespace Catch {
