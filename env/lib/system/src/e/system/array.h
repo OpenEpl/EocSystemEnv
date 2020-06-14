@@ -480,7 +480,7 @@ namespace e
 		template <typename TElem> struct is_e_array_type<e::system::array<TElem>> : std::bool_constant<true>
 		{
 		};
-		template<class T> _INLINE_VAR constexpr bool is_e_array_type_v = e::system::is_e_array_type<T>::value;
+		template<class T> inline constexpr bool is_e_array_type_v = e::system::is_e_array_type<T>::value;
 
 		template <typename T> struct remove_e_array_type
 		{
