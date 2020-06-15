@@ -1,6 +1,7 @@
 ﻿#include <catch2/catch.hpp>
 #include <e/system/type_operator_traits.h>
 #include <iostream>
+#include <vector>
 using namespace e::system;
 TEST_CASE("type operator traits", "[type_operator_traits]")
 {
@@ -116,5 +117,11 @@ TEST_CASE("type operator traits", "[type_operator_traits]")
         CHECK(has_shift_right_operator_v<int, int>);
         CHECK_FALSE(has_shift_right_operator_v<std::iostream, int>);
         CHECK_FALSE(has_shift_right_operator_v<double, int>);
+    }
+
+    SECTION("is_range")
+    {
+        CHECK(is_range_v<std::vector<int>>);
+        CHECK_FALSE(is_range_v<int>);
     }
 }

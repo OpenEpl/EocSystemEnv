@@ -75,5 +75,25 @@ namespace e
         __DefineUnaryOperatorChecker(has_neg_operator, -);
         __DefineUnaryOperatorChecker(has_bit_not_operator, ~);
 #pragma pop_macro("__DefineUnaryOperatorChecker")
+
+        template <typename _Tp>
+        class __is_range_helper
+        {
+            template <typename _Tp1,
+                typename = decltype(std::begin(std::declval<_Tp1>())),
+                typename = decltype(std::end(std::declval<_Tp1>()))>
+            static std::true_type __test(int);
+            template <typename>
+            static std::false_type __test(...);
+
+        public:
+            typedef decltype(__test<_Tp>(0)) type;
+        };
+        template <typename _Tp>
+        class is_range : public __is_range_helper<_Tp>::type
+        {
+        };
+        template <typename _Tp>
+        inline constexpr bool is_range_v = is_range<_Tp>::value;
     }
 }
