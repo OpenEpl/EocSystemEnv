@@ -8,6 +8,8 @@ namespace e
     namespace system
     {
         template <class T>
+        e::system::string repr(T &&x);
+        template <class T>
         struct repr_maker
         {
             static e::system::string of(const T &x)
@@ -56,7 +58,7 @@ namespace e
             }
         };
         template <class T>
-        auto repr(T &&x)
+        e::system::string repr(T &&x)
         {
             return repr_maker<std::remove_const_t<std::remove_reference_t<T>>>::of(std::forward<T>(x));
         }
@@ -65,7 +67,7 @@ namespace e
 #ifdef CATCH_VERSION_MAJOR
 #define IMPLEMENT_DBG_INFO_VIA_REPR(type)                                                       \
     template <>                                                                                 \
-    struct ::Catch::StringMaker<typename type>                                                  \
+    struct Catch::StringMaker<typename type>                                                    \
     {                                                                                           \
         static ::std::string convert(::std::add_lvalue_reference_t<::std::add_const_t<type>> x) \
         {                                                                                       \
