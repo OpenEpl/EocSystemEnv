@@ -6,6 +6,6 @@ if(NOT EocSystem_FOUND)
 	
 	add_subdirectory(${CMAKE_CURRENT_LIST_DIR} ${CMAKE_BINARY_DIR}/EocSystem)
 	set(EocSystem_FOUND True)
-	set(EocSystem_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/src)
+	set(EocSystem_INCLUDE_DIRS)
 	set(EocSystem_LIBRARIES EocSystem)
 endif()
