@@ -11,6 +11,8 @@ TEST_CASE("Runtime Any", "[any]")
     CHECK(x.has_value());
     CHECK(x.type() == typeid(int32_t));
     CHECK(x.cast<int32_t>() == 32);
+    CHECK_FALSE(x.is_e_array_type());
+    CHECK(reinterpret_cast<intptr_t>(x.address()) == reinterpret_cast<intptr_t>(std::addressof(x.cast<int32_t>())));
 
     e::system::any y;
     y = x;

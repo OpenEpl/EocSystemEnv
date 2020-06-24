@@ -2,6 +2,7 @@
 #include <new>
 #include <typeinfo>
 #include <vector>
+#include "array.h"
 #include "marshaler.h"
 #include "type_operator_traits.h"
 #include "div_ext_basic.h"
@@ -119,11 +120,14 @@ namespace e
             virtual e::system::any bit_shift_left(const e::system::any &a, int b) const = 0;
             virtual e::system::any bit_shift_right(const e::system::any &a, int b) const = 0;
             virtual e::system::any bit_not(const e::system::any &a) const = 0;
+
+            virtual void *address(const e::system::any &a) const = 0;
+            virtual bool is_e_array_type() const = 0;
         };
 
         template <class T>
         constexpr static const _Any_RuntimeInfo *_Any_GetRuntimeInfoInstance();
-        
+
         class any
         {
         private:
@@ -352,6 +356,22 @@ namespace e
             auto div_float(const e::system::any &that) const
             {
                 return this->runtimeInfo->div_float(*this, that);
+            }
+            void *address() const
+            {
+                if (runtimeInfo == nullptr)
+                {
+                    return nullptr;
+                }
+                return this->runtimeInfo->address(*this);
+            }
+            bool is_e_array_type() const
+            {
+                if (runtimeInfo == nullptr)
+                {
+                    return false;
+                }
+                return this->runtimeInfo->is_e_array_type();
             }
         };
 
@@ -630,6 +650,14 @@ namespace e
                 if constexpr (has_bit_not_operator_v<std::add_const_t<T>>)
                     return ~a.cast<T>();
                 throw std::domain_error("Bad operator for this object");
+            }
+            virtual void *address(const e::system::any &a) const
+            {
+                return (void *)(std::addressof(a.cast<T>()));
+            }
+            virtual bool is_e_array_type() const
+            {
+                return is_e_array_type_v<T>;
             }
 #if defined(_MSC_VER)
 #pragma warning(pop)
