@@ -11,7 +11,7 @@ namespace e
 			{
 
 			}
-			datetime(double _v) noexcept : value(_v)
+			explicit datetime(double _v) noexcept : value(_v)
 			{
 
 			}

@@ -23,7 +23,7 @@ namespace e
 				this->data = str.data;
 				str.data = nullptr;
 			}
-			string(size_t maxLength)
+			explicit string(size_t maxLength)
 			{
 				if (maxLength == 0)
 				{

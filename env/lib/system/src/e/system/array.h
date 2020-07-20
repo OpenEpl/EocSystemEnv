@@ -383,7 +383,7 @@ namespace e
 			{
 
 			}
-			template <typename ... Args> array(size_t dim1, Args... dims) : basic_array<TElem>(dim1, dims...)
+			template <typename ... Args> explicit array(size_t dim1, Args... dims) : basic_array<TElem>(dim1, dims...)
 			{
 			}
 			array(std::nullptr_t) noexcept : basic_array<TElem>(nullptr)
@@ -426,7 +426,7 @@ namespace e
 			{
 
 			}
-			bin(size_t size) : basic_array<uint8_t>(size)
+			explicit bin(size_t size) : basic_array<uint8_t>(size)
 			{
 			}
 			bin(std::nullptr_t) noexcept : basic_array<uint8_t>(nullptr)
