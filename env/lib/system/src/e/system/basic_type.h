@@ -10,6 +10,7 @@
 #include "object.h"
 #include "struct.h"
 #include "marshaler.h"
+#include "default_value.h"
 namespace e
 {
 	namespace system
