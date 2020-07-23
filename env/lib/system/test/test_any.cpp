@@ -7,7 +7,7 @@ TEST_CASE("Runtime Any", "[any]")
     CHECK_FALSE(x.has_value());
     CHECK(x.type() == typeid(void));
 
-    x = int32_t(32);
+    x = e::system::any(int32_t(32));
     CHECK(x.has_value());
     CHECK(x.type() == typeid(int32_t));
     CHECK(x.cast<int32_t>() == 32);
@@ -31,8 +31,8 @@ TEST_CASE("Runtime Any", "[any]")
     //Not affect x
     CHECK(x.cast<int32_t>() == 32);
 
-    x = EOC_STR_CONST("Hello World");
-    CHECK(x + EOC_STR_CONST(".www") == EOC_STR_CONST("Hello World.www"));
+    x = e::system::any(EOC_STR_CONST("Hello World"));
+    CHECK(x + e::system::any(EOC_STR_CONST(".www")) == e::system::any(EOC_STR_CONST("Hello World.www")));
 
-    CHECK(((e::system::any(123) & 456 ^ 789 | 996) << 1) - 39 == 2003);
+    CHECK(((e::system::any(123) & e::system::any(456) ^ e::system::any(789) | e::system::any(996)) << 1) - e::system::any(39) == e::system::any(2003));
 }

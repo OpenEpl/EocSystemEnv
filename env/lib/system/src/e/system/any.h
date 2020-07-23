@@ -145,7 +145,7 @@ namespace e
                     runtimeInfo->destroy(storage);
             }
             template <class T>
-            any(const T &value) : typeInfo(&typeid(T)), runtimeInfo(_Any_GetRuntimeInfoInstance<T>()), storage()
+            explicit any(const T &value) : typeInfo(&typeid(T)), runtimeInfo(_Any_GetRuntimeInfoInstance<T>()), storage()
             {
                 if constexpr (_Any_DataStorage::IsInlineType<T>)
                 {
@@ -511,36 +511,36 @@ namespace e
 
 #pragma push_macro("__ImplementProcessorForBinaryOperator")
 #undef __ImplementProcessorForBinaryOperator
-#define __ImplementProcessorForBinaryOperator(name, checker, op, resultType)        \
-    virtual resultType name(const e::system::any &a, const e::system::any &b) const \
-    {                                                                               \
-        if constexpr (std::is_arithmetic_v<T>)                                      \
-        {                                                                           \
-            if constexpr (checker<std::add_const_t<T>, uint8_t>)                    \
-                if (b.type() == typeid(uint8_t))                                    \
-                    return a.cast<T>() op b.cast<uint8_t>();                        \
-            if constexpr (checker<std::add_const_t<T>, const int16_t>)              \
-                if (b.type() == typeid(int16_t))                                    \
-                    return a.cast<T>() op b.cast<int16_t>();                        \
-            if constexpr (checker<std::add_const_t<T>, const int32_t>)              \
-                if (b.type() == typeid(int32_t))                                    \
-                    return a.cast<T>() op b.cast<int32_t>();                        \
-            if constexpr (checker<std::add_const_t<T>, const int64_t>)              \
-                if (b.type() == typeid(int64_t))                                    \
-                    return a.cast<T>() op b.cast<int64_t>();                        \
-            if constexpr (checker<std::add_const_t<T>, const float>)                \
-                if (b.type() == typeid(float))                                      \
-                    return a.cast<T>() op b.cast<float>();                          \
-            if constexpr (checker<std::add_const_t<T>, const double>)               \
-                if (b.type() == typeid(double))                                     \
-                    return a.cast<T>() op b.cast<double>();                         \
-        }                                                                           \
-        else if constexpr (checker<std::add_const_t<T>, std::add_const_t<T>>)       \
-        {                                                                           \
-            if (b.type() == typeid(T))                                              \
-                return a.cast<T>() op b.cast<T>();                                  \
-        }                                                                           \
-        throw std::domain_error("Bad operator for this object");                    \
+#define __ImplementProcessorForBinaryOperator(name, checker, op, resultType)          \
+    virtual resultType name(const e::system::any &a, const e::system::any &b) const   \
+    {                                                                                 \
+        if constexpr (std::is_arithmetic_v<T>)                                        \
+        {                                                                             \
+            if constexpr (checker<std::add_const_t<T>, uint8_t>)                      \
+                if (b.type() == typeid(uint8_t))                                      \
+                    return static_cast<resultType>(a.cast<T>() op b.cast<uint8_t>()); \
+            if constexpr (checker<std::add_const_t<T>, const int16_t>)                \
+                if (b.type() == typeid(int16_t))                                      \
+                    return static_cast<resultType>(a.cast<T>() op b.cast<int16_t>()); \
+            if constexpr (checker<std::add_const_t<T>, const int32_t>)                \
+                if (b.type() == typeid(int32_t))                                      \
+                    return static_cast<resultType>(a.cast<T>() op b.cast<int32_t>()); \
+            if constexpr (checker<std::add_const_t<T>, const int64_t>)                \
+                if (b.type() == typeid(int64_t))                                      \
+                    return static_cast<resultType>(a.cast<T>() op b.cast<int64_t>()); \
+            if constexpr (checker<std::add_const_t<T>, const float>)                  \
+                if (b.type() == typeid(float))                                        \
+                    return static_cast<resultType>(a.cast<T>() op b.cast<float>());   \
+            if constexpr (checker<std::add_const_t<T>, const double>)                 \
+                if (b.type() == typeid(double))                                       \
+                    return static_cast<resultType>(a.cast<T>() op b.cast<double>());  \
+        }                                                                             \
+        else if constexpr (checker<std::add_const_t<T>, std::add_const_t<T>>)         \
+        {                                                                             \
+            if (b.type() == typeid(T))                                                \
+                return static_cast<resultType>(a.cast<T>() op b.cast<T>());           \
+        }                                                                             \
+        throw std::domain_error("Bad operator for this object");                      \
     }
             __ImplementProcessorForBinaryOperator(add, has_add_operator_v, +, e::system::any);
             __ImplementProcessorForBinaryOperator(sub, has_sub_operator_v, -, e::system::any);
@@ -564,17 +564,17 @@ namespace e
                 if constexpr (std::is_arithmetic_v<T>)
                 {
                     if (b.type() == typeid(uint8_t))
-                        return e::system::div_float(a.cast<T>(), b.cast<uint8_t>());
+                        return static_cast<e::system::any>(e::system::div_float(a.cast<T>(), b.cast<uint8_t>()));
                     if (b.type() == typeid(int16_t))
-                        return e::system::div_float(a.cast<T>(), b.cast<int16_t>());
+                        return static_cast<e::system::any>(e::system::div_float(a.cast<T>(), b.cast<int16_t>()));
                     if (b.type() == typeid(int32_t))
-                        return e::system::div_float(a.cast<T>(), b.cast<int32_t>());
+                        return static_cast<e::system::any>(e::system::div_float(a.cast<T>(), b.cast<int32_t>()));
                     if (b.type() == typeid(int64_t))
-                        return e::system::div_float(a.cast<T>(), b.cast<int64_t>());
+                        return static_cast<e::system::any>(e::system::div_float(a.cast<T>(), b.cast<int64_t>()));
                     if (b.type() == typeid(float))
-                        return e::system::div_float(a.cast<T>(), b.cast<float>());
+                        return static_cast<e::system::any>(e::system::div_float(a.cast<T>(), b.cast<float>()));
                     if (b.type() == typeid(double))
-                        return e::system::div_float(a.cast<T>(), b.cast<double>());
+                        return static_cast<e::system::any>(e::system::div_float(a.cast<T>(), b.cast<double>()));
                 }
                 throw std::domain_error("Bad operator for this object");
             }
@@ -584,17 +584,17 @@ namespace e
                 if constexpr (std::is_arithmetic_v<T>)
                 {
                     if (b.type() == typeid(uint8_t))
-                        return e::system::div_int(a.cast<T>(), b.cast<uint8_t>());
+                        return static_cast<e::system::any>(e::system::div_int(a.cast<T>(), b.cast<uint8_t>()));
                     if (b.type() == typeid(int16_t))
-                        return e::system::div_int(a.cast<T>(), b.cast<int16_t>());
+                        return static_cast<e::system::any>(e::system::div_int(a.cast<T>(), b.cast<int16_t>()));
                     if (b.type() == typeid(int32_t))
-                        return e::system::div_int(a.cast<T>(), b.cast<int32_t>());
+                        return static_cast<e::system::any>(e::system::div_int(a.cast<T>(), b.cast<int32_t>()));
                     if (b.type() == typeid(int64_t))
-                        return e::system::div_int(a.cast<T>(), b.cast<int64_t>());
+                        return static_cast<e::system::any>(e::system::div_int(a.cast<T>(), b.cast<int64_t>()));
                     if (b.type() == typeid(float))
-                        return e::system::div_int(a.cast<T>(), b.cast<float>());
+                        return static_cast<e::system::any>(e::system::div_int(a.cast<T>(), b.cast<float>()));
                     if (b.type() == typeid(double))
-                        return e::system::div_int(a.cast<T>(), b.cast<double>());
+                        return static_cast<e::system::any>(e::system::div_int(a.cast<T>(), b.cast<double>()));
                 }
                 throw std::domain_error("Bad operator for this object");
             }
@@ -604,22 +604,22 @@ namespace e
                 if constexpr (std::is_arithmetic_v<T>)
                 {
                     if (b.type() == typeid(uint8_t))
-                        return e::system::mod(a.cast<T>(), b.cast<uint8_t>());
+                        return static_cast<e::system::any>(e::system::mod(a.cast<T>(), b.cast<uint8_t>()));
                     if (b.type() == typeid(int16_t))
-                        return e::system::mod(a.cast<T>(), b.cast<int16_t>());
+                        return static_cast<e::system::any>(e::system::mod(a.cast<T>(), b.cast<int16_t>()));
                     if (b.type() == typeid(int32_t))
-                        return e::system::mod(a.cast<T>(), b.cast<int32_t>());
+                        return static_cast<e::system::any>(e::system::mod(a.cast<T>(), b.cast<int32_t>()));
                     if (b.type() == typeid(int64_t))
-                        return e::system::mod(a.cast<T>(), b.cast<int64_t>());
+                        return static_cast<e::system::any>(e::system::mod(a.cast<T>(), b.cast<int64_t>()));
                     if (b.type() == typeid(float))
-                        return e::system::mod(a.cast<T>(), b.cast<float>());
+                        return static_cast<e::system::any>(e::system::mod(a.cast<T>(), b.cast<float>()));
                     if (b.type() == typeid(double))
-                        return e::system::mod(a.cast<T>(), b.cast<double>());
+                        return static_cast<e::system::any>(e::system::mod(a.cast<T>(), b.cast<double>()));
                 }
                 else if constexpr (has_mod_operator_v<std::add_const_t<T>, std::add_const_t<T>>)
                 {
                     if (b.type() == typeid(T))
-                        return a.cast<T>() % b.cast<T>();
+                        return static_cast<e::system::any>(a.cast<T>() % b.cast<T>());
                 }
                 throw std::domain_error("Bad operator for this object");
             }
@@ -627,28 +627,28 @@ namespace e
             virtual e::system::any bit_shift_left(const e::system::any &a, int b) const
             {
                 if constexpr (has_shift_left_operator_v<std::add_const_t<T>, const int>)
-                    return a.cast<T>() << b;
+                    return static_cast<e::system::any>(a.cast<T>() << b);
                 throw std::domain_error("Bad operator for this object");
             }
 
             virtual e::system::any bit_shift_right(const e::system::any &a, int b) const
             {
                 if constexpr (has_shift_right_operator_v<std::add_const_t<T>, const int>)
-                    return a.cast<T>() >> b;
+                    return static_cast<e::system::any>(a.cast<T>() >> b);
                 throw std::domain_error("Bad operator for this object");
             }
 
             virtual e::system::any neg(const e::system::any &a) const
             {
                 if constexpr (has_neg_operator_v<std::add_const_t<T>>)
-                    return -a.cast<T>();
+                    return -static_cast<e::system::any>(a.cast<T>());
                 throw std::domain_error("Bad operator for this object");
             }
 
             virtual e::system::any bit_not(const e::system::any &a) const
             {
                 if constexpr (has_bit_not_operator_v<std::add_const_t<T>>)
-                    return ~a.cast<T>();
+                    return ~static_cast<e::system::any>(a.cast<T>());
                 throw std::domain_error("Bad operator for this object");
             }
             virtual void *address(const e::system::any &a) const

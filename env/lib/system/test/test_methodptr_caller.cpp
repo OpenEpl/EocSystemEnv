@@ -18,5 +18,5 @@ TEST_CASE("call methodptr with a string argument (using any)", "[methodptr_calle
 {
     auto target = reinterpret_cast<void *>(&simpleMethodWithAStringParameter);
     e::system::MethodPtrCaller<void(e::system::any)> caller;
-    caller.call(target, EOC_STR_CONST("test"));
+    caller.call(target, e::system::any(EOC_STR_CONST("test")));
 }
