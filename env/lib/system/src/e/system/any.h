@@ -641,14 +641,14 @@ namespace e
             virtual e::system::any neg(const e::system::any &a) const
             {
                 if constexpr (has_neg_operator_v<std::add_const_t<T>>)
-                    return -static_cast<e::system::any>(a.cast<T>());
+                    return static_cast<e::system::any>(-a.cast<T>());
                 throw std::domain_error("Bad operator for this object");
             }
 
             virtual e::system::any bit_not(const e::system::any &a) const
             {
                 if constexpr (has_bit_not_operator_v<std::add_const_t<T>>)
-                    return ~static_cast<e::system::any>(a.cast<T>());
+                    return static_cast<e::system::any>(~a.cast<T>());
                 throw std::domain_error("Bad operator for this object");
             }
             virtual void *address(const e::system::any &a) const
