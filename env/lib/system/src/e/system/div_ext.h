@@ -13,10 +13,10 @@ namespace e
         }
 
         template <class L, class R,
-            std::enable_if_t<std::negation_v<std::is_arithmetic<L>> || std::negation_v<std::is_arithmetic<R>>, int> = 0>
+            std::enable_if_t<std::is_same_v<e::system::any, L> || std::is_same_v<e::system::any, R>, int> = 0>
         static auto mod(L a, R b)
         {
-            return a % b;
+            return static_cast<e::system::any>(a) % static_cast<e::system::any>(b);
         }
 
         template <class L, class R,
