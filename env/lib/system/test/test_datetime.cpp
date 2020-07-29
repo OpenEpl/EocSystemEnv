@@ -56,7 +56,13 @@ TEST_CASE("compare two datetimes", "[datetime]")
 
     CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) < e::system::datetime(1899, 1, 2, 3, 4, 5));
     CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) <= e::system::datetime(1899, 1, 2, 3, 4, 5));
-    
+
     CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) < e::system::datetime(2020, 1, 1, 3, 4, 6));
     CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) <= e::system::datetime(2020, 1, 1, 3, 4, 6));
+}
+
+TEST_CASE("calc day of year of datetime", "[datetime]")
+{
+    CHECK(D_18990101_111213.day_of_year() == 1);
+    CHECK(D_20191231_050607.day_of_year() == 365);
 }

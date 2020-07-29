@@ -9,6 +9,16 @@ namespace e
     {
         struct datetime
         {
+        private:
+            inline constexpr static int32_t DaysPerYear = 365;
+            inline constexpr static int32_t DaysPer4Years = DaysPerYear * 4 + 1;       // 1461
+            inline constexpr static int32_t DaysPer100Years = DaysPer4Years * 25 - 1;  // 36524
+            inline constexpr static int32_t DaysPer400Years = DaysPer100Years * 4 + 1; // 146097
+            inline constexpr static int32_t DaysToMonth365[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+            inline constexpr static int32_t DaysToMonth366[] = {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
+            inline constexpr static int32_t TotalSecondsPerDay = 24 * 60 * 60;
+
+        public:
             double value;
 
             constexpr datetime() noexcept : value(0)
@@ -22,7 +32,6 @@ namespace e
             datetime(int32_t year, int32_t month, int32_t day, int32_t hour = 0, int32_t minute = 0, int32_t second = 0)
             {
                 //See Also https://www.codeguru.com/cpp/cpp/cpp_mfc/article.php/c765/An-ATL-replacement-for-COleDateTime.htm
-                constexpr const int32_t DaysToMonth365[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
                 if (year < 0)
                 {
                     throw std::invalid_argument("year is out of range");
@@ -77,17 +86,36 @@ namespace e
                 return *this;
             }
 
+            int32_t day_of_year() const
+            {
+                //See Also https://referencesource.microsoft.com/#mscorlib/system/datetime.cs,28f94ab932951fd7
+                double dataPart;
+                [[maybe_unused]] double timePart = std::modf(value, &dataPart);
+                int32_t n = static_cast<int32_t>(dataPart + 693593);
+                int32_t y400 = n / DaysPer400Years;
+                n -= y400 * DaysPer400Years;
+                int32_t y100 = n / DaysPer100Years;
+                if (y100 == 4)
+                {
+                    y100 = 3;
+                }
+                n -= y100 * DaysPer100Years;
+                int32_t y4 = n / DaysPer4Years;
+                n -= y4 * DaysPer4Years;
+                int32_t y1 = n / DaysPerYear;
+                if (y1 == 4)
+                {
+                    y1 = 3;
+                }
+                n -= y1 * DaysPerYear;
+                return n + 1;
+            }
+
             void get_date_part(int32_t *year, int32_t *month, int32_t *day) const
             {
                 //See Also https://referencesource.microsoft.com/#mscorlib/system/datetime.cs,28f94ab932951fd7
-                constexpr int32_t DaysPerYear = 365;
-                constexpr int32_t DaysPer4Years = DaysPerYear * 4 + 1;       // 1461
-                constexpr int32_t DaysPer100Years = DaysPer4Years * 25 - 1;  // 36524
-                constexpr int32_t DaysPer400Years = DaysPer100Years * 4 + 1; // 146097
-                constexpr const int32_t DaysToMonth365[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
-                constexpr const int32_t DaysToMonth366[] = {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
                 double dataPart;
-                double timePart = std::modf(value, &dataPart);
+                [[maybe_unused]] double timePart = std::modf(value, &dataPart);
                 int32_t n = static_cast<int32_t>(dataPart + 693593);
                 int32_t y400 = n / DaysPer400Years;
                 n -= y400 * DaysPer400Years;
@@ -128,10 +156,9 @@ namespace e
 
             int32_t total_seconds_in_time_part() const
             {
-                constexpr int32_t totalSecondsPerDay = 24 * 60 * 60;
                 double dataPart;
                 double timePart = std::modf(value, &dataPart);
-                int32_t result = static_cast<int32_t>(std::round(totalSecondsPerDay * std::abs(timePart)));
+                int32_t result = static_cast<int32_t>(std::round(TotalSecondsPerDay * std::abs(timePart)));
                 return result;
             }
 
