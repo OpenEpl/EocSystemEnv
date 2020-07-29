@@ -38,3 +38,25 @@ TEST_CASE("get time part of datetime", "[datetime]")
     CHECK(minute == 6);
     CHECK(second == 7);
 }
+
+TEST_CASE("compare two datetimes", "[datetime]")
+{
+    CHECK(e::system::datetime(2020, 1, 2, 3, 4, 5) == e::system::datetime(2020, 1, 2, 3, 4, 5));
+    CHECK(e::system::datetime(2020, 1, 2, 3, 4, 5) >= e::system::datetime(2020, 1, 2, 3, 4, 5));
+    CHECK(e::system::datetime(2020, 1, 2, 3, 4, 5) <= e::system::datetime(2020, 1, 2, 3, 4, 5));
+
+    CHECK(e::system::datetime(2020, 1, 2, 3, 4, 6) > e::system::datetime(2020, 1, 2, 3, 4, 5));
+    CHECK(e::system::datetime(2020, 1, 2, 3, 4, 6) >= e::system::datetime(2020, 1, 2, 3, 4, 5));
+
+    CHECK(e::system::datetime(2020, 1, 1, 3, 4, 6) < e::system::datetime(2020, 1, 2, 3, 4, 5));
+    CHECK(e::system::datetime(2020, 1, 1, 3, 4, 6) <= e::system::datetime(2020, 1, 2, 3, 4, 5));
+
+    CHECK(e::system::datetime(1899, 1, 2, 3, 4, 6) > e::system::datetime(1899, 1, 2, 3, 4, 5));
+    CHECK(e::system::datetime(1899, 1, 2, 3, 4, 6) >= e::system::datetime(1899, 1, 2, 3, 4, 5));
+
+    CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) < e::system::datetime(1899, 1, 2, 3, 4, 5));
+    CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) <= e::system::datetime(1899, 1, 2, 3, 4, 5));
+    
+    CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) < e::system::datetime(2020, 1, 1, 3, 4, 6));
+    CHECK(e::system::datetime(1899, 1, 1, 3, 4, 6) <= e::system::datetime(2020, 1, 1, 3, 4, 6));
+}

@@ -250,19 +250,51 @@ namespace e
         }
         inline bool operator<(const datetime &_Left, const datetime &_Right) noexcept
         {
-            return _Left.value < _Right.value;
+            double dataPart_left;
+            double timePart_left = std::fabs(std::modf(_Left.value, &dataPart_left));
+            double dataPart_right;
+            double timePart_right = std::fabs(std::modf(_Right.value, &dataPart_right));
+            if (dataPart_left == dataPart_right)
+            {
+                return timePart_left < timePart_right;
+            }
+            return dataPart_left < dataPart_right;
         }
         inline bool operator<=(const datetime &_Left, const datetime &_Right) noexcept
         {
-            return _Left.value <= _Right.value;
+            double dataPart_left;
+            double timePart_left = std::fabs(std::modf(_Left.value, &dataPart_left));
+            double dataPart_right;
+            double timePart_right = std::fabs(std::modf(_Right.value, &dataPart_right));
+            if (dataPart_left == dataPart_right)
+            {
+                return timePart_left <= timePart_right;
+            }
+            return dataPart_left <= dataPart_right;
         }
         inline bool operator>=(const datetime &_Left, const datetime &_Right) noexcept
         {
-            return _Left.value >= _Right.value;
+            double dataPart_left;
+            double timePart_left = std::fabs(std::modf(_Left.value, &dataPart_left));
+            double dataPart_right;
+            double timePart_right = std::fabs(std::modf(_Right.value, &dataPart_right));
+            if (dataPart_left == dataPart_right)
+            {
+                return timePart_left >= timePart_right;
+            }
+            return dataPart_left >= dataPart_right;
         }
         inline bool operator>(const datetime &_Left, const datetime &_Right) noexcept
         {
-            return _Left.value > _Right.value;
+            double dataPart_left;
+            double timePart_left = std::fabs(std::modf(_Left.value, &dataPart_left));
+            double dataPart_right;
+            double timePart_right = std::fabs(std::modf(_Right.value, &dataPart_right));
+            if (dataPart_left == dataPart_right)
+            {
+                return timePart_left > timePart_right;
+            }
+            return dataPart_left > dataPart_right;
         }
     }
 }
