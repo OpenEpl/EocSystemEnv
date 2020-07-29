@@ -117,7 +117,7 @@ namespace e
                 {
                     *month = m;
                 }
-                if (*day)
+                if (day)
                 {
                     *day = n - days[m - 1] + 1;
                 }
