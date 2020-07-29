@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include <cmath>
+#include <iostream>
+#include <iomanip>
+#include <e/system/repr.h>
 namespace e
 {
     namespace system
@@ -189,6 +192,40 @@ namespace e
             {
                 return (static_cast<int32_t>(std::fmod(value, 7)) + 6) % 7 + 1;
             }
+
+            friend std::ostream &operator<<(std::ostream &output, const datetime &x)
+            {
+                int32_t year, month, day, hour, minute, second;
+                x.get_date_part(&year, &month, &day);
+                x.get_time_part(&hour, &minute, &second);
+                output << year << "-";
+                if (month < 10)
+                {
+                    output << "0";
+                }
+                output << month << "-";
+                if (day < 10)
+                {
+                    output << "0";
+                }
+                output << day << " ";
+                if (hour < 10)
+                {
+                    output << "0";
+                }
+                output << hour << ":";
+                if (minute < 10)
+                {
+                    output << "0";
+                }
+                output << minute << ":";
+                if (second < 10)
+                {
+                    output << "0";
+                }
+                output << second;
+                return output;
+            }
         };
 
         inline datetime operator+(const datetime &_Left, const datetime &_Right) noexcept
@@ -229,3 +266,18 @@ namespace e
         }
     }
 }
+template <>
+struct e::system::repr_maker<e::system::datetime>
+{
+    static e::system::string of(const e::system::datetime &value)
+    {
+        std::ostringstream stream;
+        stream << "[";
+        stream << value;
+        stream << "] (";
+        stream << std::hexfloat << value.value;
+        stream << ")";
+        return e::system::string(stream.str().c_str());
+    }
+};
+IMPLEMENT_DBG_INFO_VIA_REPR(e::system::datetime)
