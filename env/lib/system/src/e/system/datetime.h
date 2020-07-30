@@ -89,9 +89,7 @@ namespace e
             int32_t day_of_year() const
             {
                 //See Also https://referencesource.microsoft.com/#mscorlib/system/datetime.cs,28f94ab932951fd7
-                double dataPart;
-                [[maybe_unused]] double timePart = std::modf(value, &dataPart);
-                int32_t n = static_cast<int32_t>(dataPart + 693593);
+                int32_t n = static_cast<int32_t>(std::trunc(value) + 693593);
                 int32_t y400 = n / DaysPer400Years;
                 n -= y400 * DaysPer400Years;
                 int32_t y100 = n / DaysPer100Years;
@@ -114,9 +112,7 @@ namespace e
             void get_date_part(int32_t *year, int32_t *month, int32_t *day) const
             {
                 //See Also https://referencesource.microsoft.com/#mscorlib/system/datetime.cs,28f94ab932951fd7
-                double dataPart;
-                [[maybe_unused]] double timePart = std::modf(value, &dataPart);
-                int32_t n = static_cast<int32_t>(dataPart + 693593);
+                int32_t n = static_cast<int32_t>(std::trunc(value) + 693593);
                 int32_t y400 = n / DaysPer400Years;
                 n -= y400 * DaysPer400Years;
                 int32_t y100 = n / DaysPer100Years;
